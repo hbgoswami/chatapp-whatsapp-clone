@@ -1,11 +1,17 @@
 const CACHE_NAME = "chatapp-v1";
-const urlsToCache = ["/", "/static/js/bundle.js", "/manifest.json", "/favicon.ico"];
+const urlsToCache = ["/", "/manifest.json", "/favicon.ico"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache)));
+  self.skipWaiting();
 });
 
 self.addEventListener("fetch", (event) => {
+  // Never cache API or socket requests
+  if (event.request.url.includes("/api/") || event.request.url.includes("railway.app")) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
   event.respondWith(
     caches.match(event.request).then((response) => response || fetch(event.request))
   );
@@ -17,4 +23,5 @@ self.addEventListener("activate", (event) => {
       Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
     )
   );
+  self.clients.claim();
 });
