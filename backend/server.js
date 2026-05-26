@@ -15,6 +15,8 @@ const io = new Server(server, { cors: { origin: allowedOrigins, credentials: tru
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 
+app.get("/", (req, res) => res.json({ status: "✅ ChatApp Backend is running!" }));
+
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/chats", require("./routes/chatRoutes"));
 app.use("/api/messages", require("./routes/messageRoutes"));
