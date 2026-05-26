@@ -8,6 +8,10 @@ const messageSchema = new mongoose.Schema(
     mediaUrl: { type: String },
     mediaType: { type: String, enum: ["image", "video", "file", null], default: null },
     readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    replyTo: { type: mongoose.Schema.Types.ObjectId, ref: "Message", default: null },
+    reactions: [{ user: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, emoji: String }],
+    starred: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    deletedFor: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );

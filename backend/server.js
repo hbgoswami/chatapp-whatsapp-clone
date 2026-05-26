@@ -40,6 +40,14 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("delete-message", ({ messageId, chatId, members }) => {
+    members.forEach((memberId) => io.to(memberId).emit("message-deleted", { messageId, chatId }));
+  });
+
+  socket.on("react-message", ({ message, members }) => {
+    members.forEach((memberId) => io.to(memberId).emit("message-reacted", message));
+  });
+
   socket.on("typing", ({ chatId, userId }) => socket.to(chatId).emit("typing", userId));
   socket.on("stop-typing", (chatId) => socket.to(chatId).emit("stop-typing"));
 
