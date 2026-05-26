@@ -410,7 +410,7 @@ export default function ChatWindow({ chat }) {
         </div>
       </div>
 
-      {showInfo && <ChatInfoPanel chat={chat} onClose={() => setShowInfo(false)} />}
+      {showInfo && <ChatInfoPanel chat={chat} onClose={() => setShowInfo(false)} onChatUpdate={(updated) => { chat.members = updated.members; chat.groupName = updated.groupName; }} />}
     </div>
   );
 }
