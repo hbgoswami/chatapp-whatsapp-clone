@@ -30,6 +30,22 @@ exports.getChats = async (req, res) => {
   }
 };
 
+exports.createGroupChat = async (req, res) => {
+  const { name, members } = req.body;
+  try {
+    const group = await Chat.create({
+      groupName: name,
+      members: [...members, req.user._id],
+      isGroup: true,
+      groupAdmin: req.user._id,
+    });
+    const fullGroup = await Chat.findById(group._id).populate("members", "-password");
+    res.status(201).json(fullGroup);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.addToGroup = async (req, res) => {
   const { userId } = req.body;
   try {
@@ -82,20 +98,6 @@ exports.updateGroup = async (req, res) => {
       { new: true }
     ).populate("members", "-password");
     res.json(updated);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-  const { name, members } = req.body;
-  try {
-    const group = await Chat.create({
-      groupName: name,
-      members: [...members, req.user._id],
-      isGroup: true,
-      groupAdmin: req.user._id,
-    });
-    const fullGroup = await Chat.findById(group._id).populate("members", "-password");
-    res.status(201).json(fullGroup);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
