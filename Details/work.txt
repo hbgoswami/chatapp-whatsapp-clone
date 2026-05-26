@@ -1,0 +1,8 @@
+MongoDB 
+
+Username - hgresortinfo_db_user
+Password - W5L3h8v1oAOL0bIw
+
+Cloudinary
+
+API Secret - juvUEpe_rtMAHUm7CkVzZLFM75Q

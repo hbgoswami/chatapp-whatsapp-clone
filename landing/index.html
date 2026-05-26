@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ChatApp - Real-time messaging app. Chat with friends and family instantly." />
+  <title>ChatApp - Real Time Messaging</title>
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #111b21; color: #e9edef; overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 60px; background: #202c33;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 700; color: #00a884; }
+    .nav-logo span { font-size: 28px; }
+    .nav-links { display: flex; align-items: center; gap: 24px; }
+    .nav-links a { color: #8696a0; text-decoration: none; font-size: 15px; transition: color 0.2s; }
+    .nav-links a:hover { color: #e9edef; }
+    .nav-btn {
+      padding: 10px 24px; background: #00a884; color: white;
+      border: none; border-radius: 24px; cursor: pointer;
+      font-size: 15px; font-weight: 600; text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-btn:hover { background: #017561; }
+
+    /* HERO */
+    .hero {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 80px 60px; min-height: 90vh; gap: 40px;
+    }
+    .hero-text { flex: 1; max-width: 560px; }
+    .hero-badge {
+      display: inline-block; background: rgba(0,168,132,0.15);
+      color: #00a884; padding: 6px 16px; border-radius: 20px;
+      font-size: 13px; font-weight: 600; margin-bottom: 24px;
+      border: 1px solid rgba(0,168,132,0.3);
+    }
+    .hero-text h1 { font-size: 52px; font-weight: 700; line-height: 1.2; margin-bottom: 20px; color: #e9edef; }
+    .hero-text h1 span { color: #00a884; }
+    .hero-text p { font-size: 18px; color: #8696a0; line-height: 1.7; margin-bottom: 36px; }
+    .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      padding: 14px 32px; background: #00a884; color: white;
+      border: none; border-radius: 30px; cursor: pointer;
+      font-size: 16px; font-weight: 600; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: all 0.2s; box-shadow: 0 4px 20px rgba(0,168,132,0.3);
+    }
+    .btn-primary:hover { background: #017561; transform: translateY(-2px); }
+    .btn-secondary {
+      padding: 14px 32px; background: transparent; color: #e9edef;
+      border: 2px solid #2a3942; border-radius: 30px; cursor: pointer;
+      font-size: 16px; font-weight: 600; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: #00a884; color: #00a884; }
+    .hero-image { flex: 1; display: flex; justify-content: center; align-items: center; }
+    .phone-mockup {
+      width: 280px; height: 560px; background: #202c33;
+      border-radius: 40px; border: 8px solid #2a3942;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px #3b4a54;
+      overflow: hidden; position: relative;
+    }
+    .phone-screen { height: 100%; display: flex; flex-direction: column; }
+    .phone-header { background: #202c33; padding: 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #2a3942; }
+    .phone-avatar { width: 36px; height: 36px; border-radius: 50%; background: #00a884; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 14px; }
+    .phone-name { font-size: 14px; font-weight: 600; }
+    .phone-status { font-size: 11px; color: #00a884; }
+    .phone-messages { flex: 1; padding: 12px; background: #0b141a; display: flex; flex-direction: column; gap: 8px; }
+    .phone-msg { padding: 8px 12px; border-radius: 8px; font-size: 12px; max-width: 80%; }
+    .phone-msg.received { background: #202c33; align-self: flex-start; border-radius: 0 8px 8px 8px; }
+    .phone-msg.sent { background: #005c4b; align-self: flex-end; border-radius: 8px 0 8px 8px; }
+    .phone-msg-time { font-size: 10px; color: #8696a0; margin-top: 3px; text-align: right; }
+    .phone-input { background: #202c33; padding: 10px; display: flex; align-items: center; gap: 8px; }
+    .phone-input-bar { flex: 1; background: #2a3942; border-radius: 20px; padding: 8px 12px; font-size: 11px; color: #8696a0; }
+    .phone-send { width: 32px; height: 32px; background: #00a884; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+
+    /* STATS */
+    .stats { display: flex; justify-content: center; gap: 60px; padding: 40px 60px; background: #202c33; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-number { font-size: 36px; font-weight: 700; color: #00a884; }
+    .stat-label { font-size: 14px; color: #8696a0; margin-top: 4px; }
+
+    /* FEATURES */
+    .features { padding: 80px 60px; }
+    .section-title { text-align: center; margin-bottom: 60px; }
+    .section-title h2 { font-size: 36px; font-weight: 700; color: #e9edef; margin-bottom: 12px; }
+    .section-title p { font-size: 16px; color: #8696a0; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .feature-card {
+      background: #202c33; padding: 32px; border-radius: 16px;
+      border: 1px solid #2a3942; transition: all 0.3s;
+    }
+    .feature-card:hover { border-color: #00a884; transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,168,132,0.1); }
+    .feature-icon { font-size: 40px; margin-bottom: 16px; }
+    .feature-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 10px; color: #e9edef; }
+    .feature-card p { font-size: 14px; color: #8696a0; line-height: 1.6; }
+
+    /* HOW IT WORKS */
+    .how-it-works { padding: 80px 60px; background: #0b141a; }
+    .steps { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 60px; }
+    .step { text-align: center; max-width: 220px; }
+    .step-number {
+      width: 56px; height: 56px; background: #00a884; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 700; margin: 0 auto 16px;
+    }
+    .step h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .step p { font-size: 13px; color: #8696a0; line-height: 1.6; }
+    .step-arrow { font-size: 28px; color: #2a3942; align-self: center; margin-top: -20px; }
+
+    /* DOWNLOAD */
+    .download { padding: 80px 60px; text-align: center; }
+    .download h2 { font-size: 40px; font-weight: 700; margin-bottom: 16px; }
+    .download h2 span { color: #00a884; }
+    .download p { font-size: 16px; color: #8696a0; margin-bottom: 40px; }
+    .download-buttons { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .download-btn {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 28px; background: #202c33; border: 2px solid #2a3942;
+      border-radius: 12px; cursor: pointer; text-decoration: none; color: #e9edef;
+      transition: all 0.2s; min-width: 200px;
+    }
+    .download-btn:hover { border-color: #00a884; background: #2a3942; }
+    .download-btn-icon { font-size: 32px; }
+    .download-btn-text { text-align: left; }
+    .download-btn-text small { font-size: 11px; color: #8696a0; display: block; }
+    .download-btn-text strong { font-size: 16px; }
+    .pwa-note { margin-top: 24px; font-size: 13px; color: #8696a0; }
+    .pwa-note span { color: #00a884; }
+
+    /* FOOTER */
+    footer { background: #202c33; padding: 40px 60px; border-top: 1px solid #2a3942; }
+    .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .footer-logo { font-size: 20px; font-weight: 700; color: #00a884; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { color: #8696a0; text-decoration: none; font-size: 14px; }
+    .footer-links a:hover { color: #e9edef; }
+    .footer-copy { color: #8696a0; font-size: 13px; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .hero { flex-direction: column; padding: 40px 20px; text-align: center; }
+      .hero-text h1 { font-size: 34px; }
+      .hero-buttons { justify-content: center; }
+      .hero-image { order: -1; }
+      .phone-mockup { width: 220px; height: 440px; }
+      .stats { gap: 30px; padding: 30px 20px; }
+      .features { padding: 60px 20px; }
+      .how-it-works { padding: 60px 20px; }
+      .download { padding: 60px 20px; }
+      footer { padding: 30px 20px; }
+      .footer-content { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo"><span>💬</span> ChatApp</div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#download">Download</a>
+    </div>
+    <a href="https://YOUR_FRONTEND_URL" class="nav-btn" target="_blank">Open App →</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-text">
+      <div class="hero-badge">🚀 Free & Open Source</div>
+      <h1>Chat with anyone, <span>anywhere</span> instantly</h1>
+      <p>A real-time messaging app with group chats, media sharing, read receipts, and end-to-end security. Works on all devices.</p>
+      <div class="hero-buttons">
+        <a href="https://YOUR_FRONTEND_URL" class="btn-primary" target="_blank">💬 Open App</a>
+        <a href="#download" class="btn-secondary">📱 Install App</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <div class="phone-mockup">
+        <div class="phone-screen">
+          <div class="phone-header">
+            <div class="phone-avatar">J</div>
+            <div>
+              <div class="phone-name">John Doe</div>
+              <div class="phone-status">● online</div>
+            </div>
+          </div>
+          <div class="phone-messages">
+            <div class="phone-msg received">Hey! How are you? 👋<div class="phone-msg-time">10:30 AM</div></div>
+            <div class="phone-msg sent">I'm great! Just tried ChatApp 😍<div class="phone-msg-time">10:31 AM ✓✓</div></div>
+            <div class="phone-msg received">It's amazing right? 🔥<div class="phone-msg-time">10:31 AM</div></div>
+            <div class="phone-msg sent">Yes! Real-time messaging works perfectly!<div class="phone-msg-time">10:32 AM ✓✓</div></div>
+            <div class="phone-msg received">Let's create a group chat! 👥<div class="phone-msg-time">10:33 AM</div></div>
+          </div>
+          <div class="phone-input">
+            <div class="phone-input-bar">Type a message...</div>
+            <div class="phone-send">➤</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="stat-number">100%</div><div class="stat-label">Free Forever</div></div>
+    <div class="stat"><div class="stat-number">⚡</div><div class="stat-label">Real-time Messaging</div></div>
+    <div class="stat"><div class="stat-number">📱</div><div class="stat-label">Works on All Devices</div></div>
+    <div class="stat"><div class="stat-number">🔒</div><div class="stat-label">Secure & Private</div></div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="section-title">
+      <h2>Everything you need to stay connected</h2>
+      <p>Packed with features that make chatting fun and easy</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Real-time Messaging</h3>
+        <p>Messages delivered instantly using WebSocket technology. No delays, no refreshing.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">👥</div>
+        <h3>Group Chats</h3>
+        <p>Create groups with multiple people. Perfect for teams, families, and friend circles.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📎</div>
+        <h3>Media Sharing</h3>
+        <p>Share images, videos, and files instantly. All media stored securely on the cloud.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✓✓</div>
+        <h3>Read Receipts</h3>
+        <p>Know when your messages are delivered and read with double tick indicators.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🟢</div>
+        <h3>Online Status</h3>
+        <p>See who's online in real-time. Know when your contacts are available to chat.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">😊</div>
+        <h3>Emoji Support</h3>
+        <p>Express yourself with a full emoji picker. Make your conversations more fun!</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h3>Install as App</h3>
+        <p>Install directly on your phone or desktop. No app store needed - works as a PWA.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Secure & Private</h3>
+        <p>JWT authentication and encrypted connections keep your conversations private.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="section-title">
+      <h2>Get started in seconds</h2>
+      <p>No downloads required - works right in your browser</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Create Account</h3>
+        <p>Sign up with your name and email. No phone number required.</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Find Friends</h3>
+        <p>Search for your friends by name and start a conversation.</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Start Chatting</h3>
+        <p>Send messages, images, and files in real-time instantly.</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-number">4</div>
+        <h3>Install App</h3>
+        <p>Install on your phone for a native app experience anytime.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD -->
+  <section class="download" id="download">
+    <h2>Available on <span>all platforms</span></h2>
+    <p>Use it in your browser or install it as an app on any device</p>
+    <div class="download-buttons">
+      <a href="https://YOUR_FRONTEND_URL" class="download-btn" target="_blank">
+        <div class="download-btn-icon">🌐</div>
+        <div class="download-btn-text">
+          <small>Use in browser</small>
+          <strong>Open Web App</strong>
+        </div>
+      </a>
+      <a href="https://YOUR_FRONTEND_URL" class="download-btn" target="_blank">
+        <div class="download-btn-icon">🤖</div>
+        <div class="download-btn-text">
+          <small>Get it on</small>
+          <strong>Android (PWA)</strong>
+        </div>
+      </a>
+      <a href="https://YOUR_FRONTEND_URL" class="download-btn" target="_blank">
+        <div class="download-btn-icon">🍎</div>
+        <div class="download-btn-text">
+          <small>Get it on</small>
+          <strong>iPhone (PWA)</strong>
+        </div>
+      </a>
+    </div>
+    <p class="pwa-note">
+      📱 To install: Open the app in your browser → tap <span>Share → Add to Home Screen</span> (iPhone) or tap <span>Install App</span> (Android)
+    </p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-logo">💬 ChatApp</div>
+      <div class="footer-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#download">Download</a>
+        <a href="https://YOUR_FRONTEND_URL" target="_blank">Open App</a>
+      </div>
+      <div class="footer-copy">© 2024 ChatApp. Free & Open Source.</div>
+    </div>
+  </footer>
+
+</body>
+</html>
