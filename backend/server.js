@@ -10,9 +10,9 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 const allowedOrigins = process.env.FRONTEND_URL ? [process.env.FRONTEND_URL, "http://localhost:3000"] : ["http://localhost:3000"];
-const io = new Server(server, { cors: { origin: allowedOrigins, credentials: true } });
+const io = new Server(server, { cors: { origin: "*", credentials: false } });
 
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+app.use(cors({ origin: "*", credentials: false }));
 app.use(express.json());
 
 app.get("/", (req, res) => res.json({ status: "✅ ChatApp Backend is running!" }));
